@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
-class PrajnaTests(object):
+import unittest
+
+class PrajnaTests(unittest.TestCase):
     """
     - test_initialized_sets_sloka_settings
     """
-    pass
+    def test_something(self):
+        pass

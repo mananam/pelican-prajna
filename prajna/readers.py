@@ -14,8 +14,8 @@ class SlokaReader(BaseReader):
         super(SlokaReader, self).__init__(*args, **kwargs)
 
     def read(self, source_path):
-        import pudb
-        pudb.set_trace()
+        #import pudb
+        #pudb.set_trace()
         print("SlokaReader read: ", self, source_path)
         content = 'some content'
         metadata = {'text': 'something'}

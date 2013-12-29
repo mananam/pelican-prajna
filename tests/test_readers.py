@@ -2,13 +2,13 @@
 
 from __future__ import unicode_literals, print_function
 
-from unittest import TestCase
+import unittest
 
 import sure
 
 from prajna.readers import SlokaReader
 
-class SlokaReaderTests(TestCase):
+class SlokaReaderTests(unittest.TestCase):
     """
     - test default metadata
     - test valid json
@@ -16,13 +16,18 @@ class SlokaReaderTests(TestCase):
     - test invalid json
     - test custom validation rule
     """
-    def test_reader_enabled_by_default(self):
+    def setUp(self):
         settings = None
+        self.slokareader = SlokaReader(settings)
 
-        slokareader = SlokaReader(settings)
 
-        slokareader.enabled.should.be.equal(True)
+    def test_reader_enabled_by_default(self):
+        self.slokareader.enabled.should.be.equal(True)
 
 
     def test_reader_file_extensions_should_be_json(self):
-        pass
+        self.slokareader.file_extensions.should.equal(['json'])
+
+
+    def test_reader_extensions_should_be_none(self):
+        self.slokareader.extensions.should.be.equal(None)
