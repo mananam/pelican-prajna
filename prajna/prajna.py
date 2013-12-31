@@ -58,6 +58,4 @@ def on_get_generators(pelican_object):
     return [SlokaGenerator]
 
 def on_connect(*args, **kwargs):
-    import pudb
-    pudb.set_trace()
-
+    pass

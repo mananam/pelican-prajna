@@ -42,6 +42,7 @@ class SlokaGenerator(Generator):
                     preread_sender=self,
                     context_signal=sloka_generator_context,
                     context_sender=self)
+                print("file: {0}, content: {1}", sloka.source_path, sloka.content)
             except Exception as e:
                 logger.warning('Could not process {}\n{}'.format(f, e))
                 continue
