@@ -19,10 +19,10 @@ class SlokaReader(BaseReader):
         super(SlokaReader, self).__init__(*args, **kwargs)
 
     def read(self, source_path):
-        logger.debug("SlokaReader: Read: ", self, source_path)
+        logger.debug("SlokaReader: Read: %s", source_path)
         source_file_ext = os.path.splitext(source_path)[-1][1:]
         if (source_file_ext not in self.file_extensions):
-            logger.debug("SlokaReader: Read: Skip ", self, source_path)
+            logger.debug("SlokaReader: Read: Skip %s", source_path)
             return None, None
 
         content = 'some content'
