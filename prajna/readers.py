@@ -2,7 +2,12 @@
 
 from __future__ import unicode_literals, print_function
 
+import logging
+import os
+
 from pelican.readers import BaseReader
+
+logger = logging.getLogger(__name__)
 
 class SlokaReader(BaseReader):
     enabled = True
@@ -10,13 +15,16 @@ class SlokaReader(BaseReader):
     extensions = None
 
     def __init__(self, *args, **kwargs):
-        print("reader: init")
+        logger.debug("SlokaReader: Initialize")
         super(SlokaReader, self).__init__(*args, **kwargs)
 
     def read(self, source_path):
-        #import pudb
-        #pudb.set_trace()
-        print("SlokaReader read: ", self, source_path)
+        logger.debug("SlokaReader: Read: ", self, source_path)
+        source_file_ext = os.path.splitext(source_path)[-1][1:]
+        if (source_file_ext not in self.file_extensions):
+            logger.debug("SlokaReader: Read: Skip ", self, source_path)
+            return None, None
+
         content = 'some content'
         metadata = {'text': 'something'}
         return content, metadata
