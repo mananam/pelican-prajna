@@ -1,7 +1,9 @@
 -r requirements.txt
+coveralls
 flake8
 flake8-pep257
 nose
 pudb
 pyfakefs
+rednose
 sure
