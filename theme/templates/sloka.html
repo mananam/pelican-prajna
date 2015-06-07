@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block head %}
+  {{ super() }}
+  {% for keyword in sloka.keywords %}
+    <meta name="keywords" contents="{{keyword}}" />
+  {% endfor %}
+
+  {% for description in sloka.description %}
+    <meta name="description" contents="{{description}}" />
+  {% endfor %}
+
+  {% for tag in sloka.tags %}
+    <meta name="tags" contents="{{tag}}" />
+  {% endfor %}
+
+{% endblock %}
+
+{% block content %}
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">
+      <a href="{{ SITEURL }}/{{ sloka.url }}" rel="bookmark"
+         title="Permalink to {{ sloka.title|striptags }}">{{ sloka.title }}</a>
+    </h2>
+  </header>
+  <footer class="post-info">
+  </footer><!-- /.post-info -->
+  <div class="entry-content">
+    {{ sloka.sloka }}
+    <br/><hr/>
+    {{ sloka.padachhed }}
+    <br/><hr/>
+    {{ sloka.anvaya }}
+  </div><!-- /.entry-content -->
+</section>
+{% endblock %}
