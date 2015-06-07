@@ -3,6 +3,8 @@
 from __future__ import unicode_literals, print_function
 from pelican import signals
 
+import os
+
 #initialized = signal('pelican_initialized')
 #get_generators = signal('get_generators')
 #finalized = signal('pelican_finalized')
@@ -43,8 +45,21 @@ from pelican import signals
 def on_initialized(pelican_object):
     # add a generator pelican_object.get_generator_classes()
     print("initialized")
-    pelican_object.settings['SLOKA_DIR'] = ''
-    pelican_object.settings['SLOKA_EXCLUDES'] = ''
+    pelican_object.settings['SLOKA_DIR'] = ""
+    pelican_object.settings['SLOKA_EXCLUDES'] = ""
+
+    # settings used by writers
+    pelican_object.settings['SLOKA_URL'] = "{slug}/index.html"
+    pelican_object.settings['SLOKA_SAVE_AS'] = "{slug}/index.html"
+
+    # TODO respect user's themes?
+    pelican_object.settings['THEME'] = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             '../theme')
+    pelican_object.theme = pelican_object.settings['THEME']
+    
+    # TODO remove default templates
+    pelican_object.settings['DIRECT_TEMPLATES'] = []
+    pelican_object.settings['PAGINATED_DIRECT_TEMPLATES'] = []
     pass
 
 def on_readers_init(readers):

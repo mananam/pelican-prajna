@@ -48,7 +48,7 @@ class SlokaReaderTests(unittest.TestCase):
 
         content, metadata = self.slokareader.read('dummy_file')
 
-        expect(content).be.empty
+        expect(content).to.equal('""')
         expect(metadata).be.empty
 
     def test_reader_throws_valueerror_for_invalid_content(self):
