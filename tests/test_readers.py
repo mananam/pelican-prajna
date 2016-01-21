@@ -4,7 +4,7 @@ from __future__ import unicode_literals, print_function
 
 import unittest
 
-import fake_filesystem
+from pyfakefs import fake_filesystem
 from sure import expect
 
 from unittest.mock import patch
