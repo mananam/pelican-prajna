@@ -9,7 +9,7 @@ from pyfakefs import fake_filesystem
 from sure import expect
 
 from unittest.mock import patch
-from prajna.readers import SlokaReader2
+from prajna.readers import SlokaReader
 
 
 class SlokaReaderTests(unittest.TestCase):
@@ -22,7 +22,7 @@ class SlokaReaderTests(unittest.TestCase):
     """
     def setUp(self):
         settings = None
-        self.slokareader = SlokaReader2(settings)
+        self.slokareader = SlokaReader(settings)
 
         self.fake_filesystem = fake_filesystem.FakeFilesystem()
         self.fake_os_module = fake_filesystem\
@@ -74,4 +74,4 @@ class SlokaReaderTests(unittest.TestCase):
         expect(content).to.equal('{}')
         expect(metadata).to.equal('{}')
         # expect(self.slokareader.read).when\
-            # .called_with('dummy_file').throw(ValueError)
+        # .called_with('dummy_file').throw(ValueError)
