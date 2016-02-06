@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 
 class Sloka(Content):
-
     """Represents a single sloka."""
 
     mandatory_properties = ('text',)
@@ -27,24 +26,23 @@ class Sloka(Content):
         """Create an instance of Sloka content."""
         # content is json, parse it
         self.text = content
-        # TODO assumption there is one sloka in every json file?
-        json_content = json.loads(content)[0]
-        self.sloka = json_content['sloka']
-        self.padachhed = json_content['padachhed']
-        self.anvaya = json_content['anvaya']
+        json_content = json.loads(content)
+        self.sloka = json_content["sloka"]
+        self.padachhed = json_content["padachhed"]
+        self.anvaya = json_content["anvaya"]
 
         # create a slug based on path from PATH directory
         # TODO override slug always to this format:
         # chapter.section.sloka
         child_path = source_path[len(context['PATH'])+1:]
         self.slug = os.path.splitext(child_path)[0].replace(os.path.sep, '.')
+        self.slug += os.path.splitext(child_path)[1]
 
         super(Sloka, self).__init__(content, metadata, settings, source_path,
                                     context)
 
 
 class SlokaGenerator(Generator):
-
     """Generate pages.
 
     - traverse thru all files

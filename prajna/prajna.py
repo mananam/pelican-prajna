@@ -65,7 +65,7 @@ def on_initialized(pelican_object):
 def on_readers_init(readers):
     # add reader
     from .readers import SlokaReader
-    readers.reader_classes['json'] = SlokaReader
+    readers.reader_classes['md'] = SlokaReader
 
 def on_get_generators(pelican_object):
     # return the generators in this class

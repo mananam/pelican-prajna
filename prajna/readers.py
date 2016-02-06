@@ -12,15 +12,35 @@ logger = logging.getLogger(__name__)
 
 
 class SlokaReader(BaseReader):
+    """A commonmarkdown based reader for sanskrit verses.
 
-    """A reader for sloka content.
+    Uses following additional markup to extract special context:
 
-    - parse the given file for json content
-    - extract metadata, content for the file
+        <!-- Verse Metadata -->
+        Key: Value
+
+        <!-- Verse -->
+        ~~~sloka
+        line1
+        line2
+        line3
+        ~~~
+
+        ~~~padachhed
+        word1 word2
+        word2a word2b
+        word3a
+        ~~~
+
+        ~~~anvaya
+        word2a word1 word3a word2 word2b
+        ~~~
+
+    TODO sloka, padachhed, anvaya are styled differently.
     """
 
     enabled = True
-    file_extensions = ['json']
+    file_extensions = ['md']
     extensions = None
 
     def __init__(self, *args, **kwargs):
@@ -37,11 +57,28 @@ class SlokaReader(BaseReader):
             string, dict: content of the file as string, dictionary of metadata
         """
         logger.debug("SlokaReader: Read: %s", source_path)
+
+        import CommonMark
+        metadata = {}
+        content = {}
         with open(source_path) as f:
-            json_content = json.load(f)
+            # parse the metadata
+            line = f.readline().rstrip().split(":", 1)
+            while len(line) == 2:
+                metadata[line[0]] = line[1]
+                line = f.readline().rstrip().split(":", 1)
 
-        logger.debug("SlokaReader: File content: %s", json_content)
-        content = json.dumps(json_content['content'])
-        metadata = json_content['metadata']
+            parser = CommonMark.Parser()
+            ast = parser.parse(f.read())
+            walker = ast.walker()
+            event = walker.nxt()
+            while event is not None:
+                node = event["node"]
+                if node.t == "CodeBlock":
+                    content[node.info] = node.literal.rstrip()
+                event = walker.nxt()
+        json_content = json.dumps(content)
+        return json_content, json.dumps(metadata)
 
-        return content, metadata
+    def _is_valid_node(self, node):
+        pass
