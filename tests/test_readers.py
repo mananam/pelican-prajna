@@ -2,7 +2,6 @@
 
 from __future__ import unicode_literals, print_function
 
-import json
 import unittest
 
 from pyfakefs import fake_filesystem
@@ -48,13 +47,12 @@ class SlokaReaderTests(unittest.TestCase):
         new_file.SetContents('lang:sa\nkey:value')
 
         content, metadata = self.slokareader.read('dummy_file')
-        json_metadata = json.loads(metadata)
 
         expect(content).to.equal('{}')
-        expect(json_metadata).to_not.none
-        expect(json_metadata).to.have.length_of(2)
-        expect(json_metadata).to.have.key('lang').to.equal('sa')
-        expect(json_metadata).to.have.key('key').to.equal('value')
+        expect(metadata).to_not.none
+        expect(metadata).to.have.length_of(2)
+        expect(metadata).to.have.key('lang').to.equal('sa')
+        expect(metadata).to.have.key('key').to.equal('value')
 
     def test_reader_doesnot_read_invalid_metadata(self):
         new_file = self.fake_filesystem.CreateFile('dummy_file')
@@ -63,15 +61,24 @@ class SlokaReaderTests(unittest.TestCase):
         content, metadata = self.slokareader.read('dummy_file')
 
         expect(content).to.equal('{}')
-        expect(metadata).to.equal('{}')
+        expect(metadata).to.equal({})
 
-    def test_reader_throws_valueerror_for_invalid_content(self):
+    def test_reader_doesnot_throw_for_zero_content(self):
         new_file = self.fake_filesystem.CreateFile('dummy_file')
         new_file.SetContents("")
 
         content, metadata = self.slokareader.read('dummy_file')
 
         expect(content).to.equal('{}')
-        expect(metadata).to.equal('{}')
+        expect(metadata).to.equal({})
         # expect(self.slokareader.read).when\
         # .called_with('dummy_file').throw(ValueError)
+
+    def test_reader_strips_newline_from_info_string(self):
+        new_file = self.fake_filesystem.CreateFile('dummy_file')
+        new_file.SetContents("~~~sloka\nsloka\ncontent\n~~~")
+
+        content, metadata = self.slokareader.read('dummy_file')
+
+        expect(content).to.equal('{"sloka": "sloka\\ncontent"}')
+        expect(metadata).to.equal({})

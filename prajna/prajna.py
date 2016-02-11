@@ -60,6 +60,10 @@ def on_initialized(pelican_object):
     # TODO remove default templates
     pelican_object.settings['DIRECT_TEMPLATES'] = []
     pelican_object.settings['PAGINATED_DIRECT_TEMPLATES'] = []
+
+    # metadata
+    pelican_object.settings['SLOKA_LANG_SAVE_AS'] = "{slug}/index.html"
+    pelican_object.settings['SLOKA_LANG_URL'] = "{lang}/{slug}/index.html"
     pass
 
 def on_readers_init(readers):

@@ -27,6 +27,7 @@ class Sloka(Content):
         # content is json, parse it
         self.text = content
         json_content = json.loads(content)
+        # TODO handle \n to <br/> conversion
         self.sloka = json_content["sloka"]
         self.padachhed = json_content["padachhed"]
         self.anvaya = json_content["anvaya"]

@@ -59,26 +59,36 @@ class SlokaReader(BaseReader):
         logger.debug("SlokaReader: Read: %s", source_path)
 
         import CommonMark
+        from CommonMark.common import escape_xml
         metadata = {}
         content = {}
         with open(source_path) as f:
             # parse the metadata
-            line = f.readline().rstrip().split(":", 1)
-            while len(line) == 2:
-                metadata[line[0]] = line[1]
-                line = f.readline().rstrip().split(":", 1)
+            line = f.readline()
+            keyval = line.rstrip().split(":", 1)
+            while len(keyval) == 2:
+                metadata[keyval[0]] = keyval[1]
+                line = f.readline()
+                keyval = line.rstrip().split(":", 1)
 
             parser = CommonMark.Parser()
-            ast = parser.parse(f.read())
+            ast = parser.parse(line + f.read())
             walker = ast.walker()
             event = walker.nxt()
             while event is not None:
                 node = event["node"]
-                if node.t == "CodeBlock":
+                if self._is_valid_node(node):
                     content[node.info] = node.literal.rstrip()
                 event = walker.nxt()
         json_content = json.dumps(content)
-        return json_content, json.dumps(metadata)
+        json_metadata = json.dumps(metadata)
+
+        return json_content, metadata
+
+    # def process_metadata(self, name, value):
+        # return value
 
     def _is_valid_node(self, node):
-        pass
+        if node.t == "CodeBlock":
+            return True
+        return False
