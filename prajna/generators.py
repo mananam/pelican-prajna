@@ -28,7 +28,7 @@ class Sloka(Content):
         self.text = content
         json_content = json.loads(content)
         # TODO handle \n to <br/> conversion
-        self.sloka = json_content["sloka"]
+        self.sloka = self.markdown_to_html(json_content["sloka"])
         self.padachhed = json_content["padachhed"]
         self.anvaya = json_content["anvaya"]
 
@@ -41,6 +41,16 @@ class Sloka(Content):
 
         super(Sloka, self).__init__(content, metadata, settings, source_path,
                                     context)
+
+    def markdown_to_html(self, mdtext):
+        """Convert markdown content to html for render."""
+        from CommonMark.html import HtmlRenderer
+        from CommonMark.CommonMark import Parser
+        parser = Parser()
+        ast = parser.parse(mdtext)
+        renderer = HtmlRenderer()
+        renderer.softbreak = "<br/>"
+        return renderer.render(ast)
 
 
 class SlokaGenerator(Generator):
@@ -98,8 +108,9 @@ class SlokaGenerator(Generator):
         logger.debug("SlokaGenerator: Generate output")
 
         for sloka in self.articles:
+            override_output = hasattr(sloka, 'override_save_as')
             writer.write_file(name=sloka.save_as,
                               template=self.get_template(sloka.template),
                               context=self.context, sloka=sloka,
                               relative_urls=self.settings['RELATIVE_URLS'],
-                              override_output=hasattr(sloka, 'override_save_as'))
+                              override_output=override_output)

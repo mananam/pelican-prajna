@@ -71,8 +71,6 @@ class SlokaReaderTests(unittest.TestCase):
 
         expect(content).to.equal('{}')
         expect(metadata).to.equal({})
-        # expect(self.slokareader.read).when\
-        # .called_with('dummy_file').throw(ValueError)
 
     def test_reader_strips_newline_from_info_string(self):
         new_file = self.fake_filesystem.CreateFile('dummy_file')
