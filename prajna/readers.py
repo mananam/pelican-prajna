@@ -59,7 +59,6 @@ class SlokaReader(BaseReader):
         logger.debug("SlokaReader: Read: %s", source_path)
 
         import CommonMark
-        from CommonMark.common import escape_xml
         metadata = {}
         content = {}
         with open(source_path) as f:
@@ -81,7 +80,6 @@ class SlokaReader(BaseReader):
                     content[node.info] = node.literal.rstrip()
                 event = walker.nxt()
         json_content = json.dumps(content)
-        json_metadata = json.dumps(metadata)
 
         return json_content, metadata
 
@@ -89,6 +87,6 @@ class SlokaReader(BaseReader):
         # return value
 
     def _is_valid_node(self, node):
-        if node.t == "CodeBlock":
+        if node.t == "code_block":
             return True
         return False
