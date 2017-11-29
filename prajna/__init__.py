@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals, print_function
 from pelican import signals
 
 from prajna import prajna
+
 
 def register():
     signals.initialized.connect(prajna.on_initialized)
