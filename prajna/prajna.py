@@ -42,9 +42,9 @@ import os
 ## Writers signals
 #content_written = signal('content_written')
 
+
 def on_initialized(pelican_object):
     # add a generator pelican_object.get_generator_classes()
-    print("initialized")
     pelican_object.settings['SLOKA_DIR'] = ""
     pelican_object.settings['SLOKA_EXCLUDES'] = ""
 
@@ -56,7 +56,7 @@ def on_initialized(pelican_object):
     pelican_object.settings['THEME'] = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              '../theme')
     pelican_object.theme = pelican_object.settings['THEME']
-    
+
     # TODO remove default templates
     pelican_object.settings['DIRECT_TEMPLATES'] = []
     pelican_object.settings['PAGINATED_DIRECT_TEMPLATES'] = []
@@ -64,7 +64,7 @@ def on_initialized(pelican_object):
     # metadata
     pelican_object.settings['SLOKA_LANG_SAVE_AS'] = "{slug}/index.html"
     pelican_object.settings['SLOKA_LANG_URL'] = "{lang}/{slug}/index.html"
-    pass
+
 
 def on_readers_init(readers):
     # add reader
