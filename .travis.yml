@@ -10,4 +10,4 @@ install:
 
 script: pipenv run nosetests
 
-after_success: pipenv run coveralls
+after_success: pipenv run codecov
