@@ -71,10 +71,12 @@ def on_readers_init(readers):
     from .readers import SlokaReader
     readers.reader_classes['md'] = SlokaReader
 
+
 def on_get_generators(pelican_object):
     # return the generators in this class
     from .generators import SlokaGenerator
     return [SlokaGenerator]
+
 
 def on_connect(*args, **kwargs):
     pass
