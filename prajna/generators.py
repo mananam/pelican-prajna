@@ -7,6 +7,7 @@ import logging
 import json
 import os.path
 
+import pelican.signals
 from pelican.generators import Generator
 from pelican.contents import Content, is_valid_content
 
@@ -34,8 +35,7 @@ class Sloka(Content):
         # TODO override slug always to this format:
         # chapter.section.sloka
         child_path = source_path[len(context['PATH'])+1:]
-        self.slug = os.path.splitext(child_path)[0].replace(os.path.sep, '.')
-        self.slug += os.path.splitext(child_path)[1]
+        self.slug = child_path.replace(os.path.sep, '.')
 
         super(Sloka, self).__init__(content, metadata, settings, source_path,
                                     context)
@@ -79,9 +79,9 @@ class SlokaGenerator(Generator):
                 sloka = self.readers.read_file(
                     base_path=self.path, path=f, content_class=Sloka,
                     context=self.context,
-                    preread_signal=sloka_generator_preread,
+                    preread_signal=pelican.signals.sloka_generator_preread,
                     preread_sender=self,
-                    context_signal=sloka_generator_context,
+                    context_signal=pelican.signals.sloka_generator_context,
                     context_sender=self)
                 logger.debug("SlokaGenerator: file: {0}, content: {1}"
                              .format(sloka.source_path, sloka.content))
@@ -99,7 +99,7 @@ class SlokaGenerator(Generator):
         # TODO sort articles by filename
         # TODO organize articles by chapters
         # TODO link transliterations to original article
-        sloka_generator_finalized.send(self)
+        pelican.signals.sloka_generator_finalized.send(self)
 
     def generate_output(self, writer):
         """Generate the sloka file."""
