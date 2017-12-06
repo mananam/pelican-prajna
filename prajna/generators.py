@@ -7,7 +7,7 @@ import logging
 import json
 import os.path
 
-import pelican.signals
+import prajna.signals
 from pelican.generators import Generator
 from pelican.contents import Content, is_valid_content
 
@@ -68,20 +68,21 @@ class SlokaGenerator(Generator):
         logger.debug("SlokaGenerator: Generate context")
 
         self.articles = []
+        # TODO handle cases where settings are not set
         for f in self.get_files(
                 self.settings['SLOKA_DIR'],
                 exclude=self.settings['SLOKA_EXCLUDES']):
             try:
                 # TODO index files
-                if f.endswith("info.json"):
-                    continue
+                # if f.endswith("info.json"):
+                    # continue
 
                 sloka = self.readers.read_file(
                     base_path=self.path, path=f, content_class=Sloka,
                     context=self.context,
-                    preread_signal=pelican.signals.sloka_generator_preread,
+                    preread_signal=prajna.signals.sloka_generator_preread,
                     preread_sender=self,
-                    context_signal=pelican.signals.sloka_generator_context,
+                    context_signal=prajna.signals.sloka_generator_context,
                     context_sender=self)
                 logger.debug("SlokaGenerator: file: {0}, content: {1}"
                              .format(sloka.source_path, sloka.content))
@@ -99,7 +100,7 @@ class SlokaGenerator(Generator):
         # TODO sort articles by filename
         # TODO organize articles by chapters
         # TODO link transliterations to original article
-        pelican.signals.sloka_generator_finalized.send(self)
+        prajna.signals.sloka_generator_finalized.send(self)
 
     def generate_output(self, writer):
         """Generate the sloka file."""

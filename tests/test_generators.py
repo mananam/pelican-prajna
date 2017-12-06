@@ -44,6 +44,9 @@ class SlokaGeneratorTests(unittest.TestCase):
         outpath = "output/test.html"
 
         self.settings['PATH'] = self.path
+        # use self.path as input dir
+        self.settings['SLOKA_DIR'] = "input/"
+        self.settings['SLOKA_EXCLUDES'] = []
         self.settings['SLOKA_SAVE_AS'] = os.path.join(self.path, "01.html")
         self.settings['WRITE_SELECTED'] = []
         self.slokagen = SlokaGenerator(context=self.context,
@@ -60,20 +63,38 @@ class SlokaGeneratorTests(unittest.TestCase):
 
         self._create_patch('builtins.open', self.fake_file_open)
         self._create_patch('os.stat', self.fake_os_module.stat)
+        self._create_patch('os.walk', self.fake_os_module.walk)
 
     def test_generate_output_should_write_html_file(self):
         writer = Writer("/tmp/out.html", settings=self.settings)
-        content = '{"sloka": "s", "padachhed": "p", "anvaya": "a"}'
-        sloka = Sloka(content,
-                      source_path="/tmp/ch1/01.md",
-                      context=self.context)
         self._create_fake_files()
-        self.slokagen.articles = [sloka]
+        self.slokagen.articles = [self._get_sloka()]
 
         self.slokagen.generate_output(writer)
 
         with open(os.path.join(self.path, "01.html"), 'r') as f:
             expect(f.readline()).to.eql("<p>s</p>\n")
+
+    def test_generate_context_should_read_files(self):
+        self._create_fake_files()
+
+        self.slokagen.generate_context()
+
+        expect(self.slokagen.articles).to.length_of(1)
+        expect(self.slokagen.articles[0].sloka).to.eql("<p>s</p>\n")
+        expect(self.slokagen.articles[0].padachhed).to.eql("p")
+        expect(self.slokagen.articles[0].anvaya).to.eql("a")
+
+    def test_generate_context_should_skip_info_files(self):
+        # TODO support index files
+        self._create_fake_files()
+        self._create_input_file("info.json", "{}")
+
+        self.slokagen.generate_context()
+
+        # info.json should be skipped
+        expect(self.slokagen.articles).to.length_of(1)
+        expect(self.slokagen.articles[0].sloka).to.eql("<p>s</p>\n")
 
     def _create_fake_files(self):
         self.fake_os_module.makedirs(self.path, exist_ok=True)
@@ -85,7 +106,25 @@ class SlokaGeneratorTests(unittest.TestCase):
         with open(template_file, 'w') as f:
             f.write("{{ sloka.sloka }}")
 
+        # Create a fake input file
+        content = "~~~sloka\ns\n~~~\n~~~padachhed\np\n~~~\n~~~anvaya\na\n~~~"
+        self._create_input_file("01.md", content)
+
+    def _create_input_file(self, name, content):
+        input_dir = os.path.join(self.path, self.settings['SLOKA_DIR'])
+        input_file = os.path.join(input_dir, name)
+        self.fake_os_module.makedirs(input_dir, exist_ok=True)
+        f = self.fake_filesystem.CreateFile(input_file)
+        f.SetContents(content)
+
     def _create_patch(self, method, patch):
         patcher = unittest.mock.patch(method, patch)
         patcher.start()
         self.addCleanup(patcher.stop)
+
+    def _get_sloka(self):
+        content = '{"sloka": "s", "padachhed": "p", "anvaya": "a"}'
+        sloka = Sloka(content,
+                      source_path="/tmp/ch1/01.md",
+                      context=self.context)
+        return sloka
