@@ -85,6 +85,25 @@ class SlokaGeneratorTests(unittest.TestCase):
         expect(self.slokagen.articles[0].padachhed).to.eql("p")
         expect(self.slokagen.articles[0].anvaya).to.eql("a")
 
+    def test_generate_context_should_skip_file_without_content(self):
+        # Create a file without `~~~sloka` content, it should be skipped
+        self._create_fake_files()
+        self._create_input_file("02.md", "~~~anvaya\na\n~~~")
+
+        self.slokagen.generate_context()
+
+        expect(self.slokagen.articles).to.length_of(1)
+        expect(self.slokagen.articles[0].sloka).to.eql("<p>s</p>\n")
+
+    def test_generate_context_should_skip_file_parse_error(self):
+        self._create_fake_files()
+        self._create_input_file("02.md", "")
+
+        self.slokagen.generate_context()
+
+        expect(self.slokagen.articles).to.length_of(1)
+        expect(self.slokagen.articles[0].sloka).to.eql("<p>s</p>\n")
+
     def test_generate_context_should_skip_info_files(self):
         # TODO support index files
         self._create_fake_files()

@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class Sloka(Content):
     """Represents a single sloka."""
 
-    mandatory_properties = ('text',)
+    mandatory_properties = ('text', 'sloka')
     default_template = 'sloka'
 
     def __init__(self, content, metadata=None, settings=None,
@@ -27,6 +27,7 @@ class Sloka(Content):
         self.text = content
         json_content = json.loads(content)
         # TODO handle \n to <br/> conversion
+        # TODO handle partial json
         self.sloka = self._markdown_to_html(json_content["sloka"])
         self.padachhed = json_content["padachhed"]
         self.anvaya = json_content["anvaya"]
