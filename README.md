@@ -1,6 +1,7 @@
 pelican-prajna
 ==============
 [![Build Status](https://img.shields.io/travis/mananam/pelican-prajna.svg)](https://travis-ci.org/mananam/pelican-prajna)
+[![Coverage Status](https://img.shields.io/codecov/c/github/mananam/pelican-prajna.svg)](https://codecov.io/gh/mananam/pelican-prajna)
 
 A [pelican][] plugin to parse sanskrit texts and create beautiful static html
 content.
